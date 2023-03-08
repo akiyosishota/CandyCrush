@@ -1,0 +1,520 @@
+fileFormatVersion: 2
+guid: 5ec82df9769aec54984b19126f77213a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8598610235263866696
+    second: NicePng_crush-soda-png_5898415_0
+  - first:
+      213: 6034389167206882535
+    second: NicePng_crush-soda-png_5898415_1
+  - first:
+      213: -1266806005684492393
+    second: NicePng_crush-soda-png_5898415_2
+  - first:
+      213: -7542636192544509547
+    second: NicePng_crush-soda-png_5898415_3
+  - first:
+      213: -1292162981172729003
+    second: NicePng_crush-soda-png_5898415_4
+  - first:
+      213: 912397110162406676
+    second: NicePng_crush-soda-png_5898415_5
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 72
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: OrangeCandy
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 1129
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ecd4dbd9f47eb350800000000000000
+      internalID: 6034389167206882535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GreenCandy
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 1129
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5913161785c235790800000000000000
+      internalID: -7542636192544509547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlueCandy
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 1129
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55b2a436d90511ee0800000000000000
+      internalID: -1292162981172729003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurpleCandy
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 1129
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41db25d665c79ac00800000000000000
+      internalID: 912397110162406676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeCandy_Side_Bom
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 942
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f7f760a4aa6f0340a5bbed12bb10b6f
+      internalID: -1523284634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GreenCandy_Side_Bom
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 942
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d85270d38bd009c4ea341421d71e254d
+      internalID: 722482858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlueCandy_Side_Bom
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 942
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03224b69feaca2247b701d5b5b30a7a0
+      internalID: 1984832865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurpleCandy_Side_Bom
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 942
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ff516e136e076c4b8d97d99e1a20680
+      internalID: 1752201684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeCandy_Vertical_Bom
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 846
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eada1b14455e69d4db0348929ccd14f0
+      internalID: -1165258574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GreenCandy_Vertical_Bom
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 846
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e04affb4d3ce28048b69fd705a97c5dd
+      internalID: 1390277358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlueCandy_Vertical_Bom
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 846
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99097d268d9137540977638cfa63e95d
+      internalID: 832466938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurpleCandy_Vertical_Bom
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 846
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5226777690d596f4bb90f64da9179e79
+      internalID: 1720905549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeCandy_Surroundings_Bom
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 753
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 003056e52fe3df34d9f9d9f0d2e431b1
+      internalID: 1902500422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GreenCandy_Surroundings_Bom
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 753
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51caed5c83384744184d87dfc1a797d3
+      internalID: -1110248296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlueCandy_Surroundings_Bom
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 753
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59f7e5e48ad4755448ccabbb69845316
+      internalID: -1608343557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurpleCandy_Surroundings_Bom
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 753
+        width: 72
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62903f7a7aba5c44ba6be10a18449e72
+      internalID: 1272096903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Color_Bom
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 0
+        width: 73
+        height: 71
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62708ab17bdddf941a98f66318c8848b
+      internalID: 74183125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      RedCandy_Vertical_Bom: 2042340035
+      OrangeCandy_Side_Bom: -1523284634
+      GreenCandy_Surroundings_Bom: -1110248296
+      PurpleCandy_Side_Bom: 1752201684
+      BlueCandy_Side_Bom: 1984832865
+      GreenCandy_Side_Bom: 722482858
+      RedCandy: 8598610235263866696
+      Color_Bom: 74183125
+      BlueCandy: -1292162981172729003
+      OrangeCandy_Surroundings_Bom: 1902500422
+      GreenCandy_Vertical_Bom: 1390277358
+      OrangeCandy_Vertical_Bom: -1165258574
+      PurpleCandy_Vertical_Bom: 1720905549
+      BlueCandy_Vertical_Bom: 832466938
+      OrangeCandy: 6034389167206882535
+      BlueCandy_Surroundings_Bom: -1608343557
+      RedCandy_Surroundings_Bom: 242275675
+      PurpleCandy_Surroundings_Bom: 1272096903
+      RedCandy_Side_Bom: -569983822
+      GreenCandy: -7542636192544509547
+      PurpleCandy: 912397110162406676
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
