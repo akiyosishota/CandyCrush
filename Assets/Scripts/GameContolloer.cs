@@ -6,9 +6,13 @@ using System;
 
 public class GameContolloer : MonoBehaviour
  {
+    private int _verticalBom = 0;
+    private int _horizontalBom = 1;
     //フィールドのキャンディを管理するための配列
     private int[,] _fieldNormalCandySearch = null;
     private int[,] _fieldConnectionSearch = null;
+    //フィールドに存在するボムの種類を管理する配列
+    private int[,] _fieldTypeBoms = null;
     //生成するボムの情報を管理する配列
     private int[,] _fieldVerticalBoms = null;
     private int[,] _fieldHorizontalBoms = null;
@@ -39,6 +43,7 @@ public class GameContolloer : MonoBehaviour
     //表示しているカーソルオブジェクト
     private void Start()
      {
+        _fieldTypeBoms = new int[_fieldMaxX + 1, _fieldMaxY + 1];
         //配列の初期化
         _fieldNormalCandySearch = new int[_fieldMaxX + 1, _fieldMaxY + 1];
         _fieldVerticalBoms = new int[_fieldMaxX + 1, _fieldMaxY + 1];
@@ -119,7 +124,7 @@ public class GameContolloer : MonoBehaviour
                 for (int x = 0; x <= _fieldMaxX; x++)
                 {
 
-                    a = _fieldHorizontalBoms[x, y].ToString();
+                    a = _fieldConnectionSearch[x, y].ToString();
 
                     aaa = String.Concat(aaa, a);
 
@@ -225,6 +230,9 @@ public class GameContolloer : MonoBehaviour
                     int i = _fieldNormalCandySearch[secondClickCandyPosX, secondClickCandyPosY];
                     _fieldNormalCandySearch[secondClickCandyPosX, secondClickCandyPosY] = _fieldNormalCandySearch[firstClickCandyPosX, firstClickCandyPosY];
                     _fieldNormalCandySearch[firstClickCandyPosX, firstClickCandyPosY] = i;
+                    int j = _fieldTypeBoms[secondClickCandyPosX, secondClickCandyPosY];
+                    _fieldTypeBoms[secondClickCandyPosX, secondClickCandyPosY] = _fieldTypeBoms[firstClickCandyPosX, firstClickCandyPosY];
+                    _fieldTypeBoms[firstClickCandyPosX, firstClickCandyPosY] = j;
                     break;
                 }
             }
@@ -283,18 +291,20 @@ public class GameContolloer : MonoBehaviour
                 }
             }
         }
-        //3つ以上そろっているキャンディのGameObjectを消します
-        foreach (Transform Candy in _candys.transform)
-        {
-            int CandyPosX = Mathf.FloorToInt(Candy.position.x);
-            int CandyPosY = Mathf.FloorToInt(Candy.position.y);
-            if (_fieldConnectionSearch[CandyPosX, CandyPosY] == _noData)
-            {
-                Destroy(Candy.gameObject);
-                _fieldNormalCandySearch[CandyPosX, CandyPosY] = _noData;
-                CreateBoms(CandyPosX, CandyPosY);
-            }
-        }
+        ErasedCandy();
+       ////3つ以上そろっているキャンディのGameObjectを消します
+       //foreach (Transform Candy in _candys.transform)
+       //{
+       //    int CandyPosX = Mathf.FloorToInt(Candy.position.x);
+       //    int CandyPosY = Mathf.FloorToInt(Candy.position.y);
+       //    if (_fieldConnectionSearch[CandyPosX, CandyPosY] == _noData)
+       //    {
+       //        Destroy(Candy.gameObject);
+       //        _fieldNormalCandySearch[CandyPosX, CandyPosY] = _noData;
+       //        UseBom(CandyPosX, CandyPosY);
+       //        CreateBoms(CandyPosX, CandyPosY);
+       //    }
+       //}
         for (int X = 0; X <= _fieldMaxX; X++)
         {
             ///<summary>
@@ -324,6 +334,23 @@ public class GameContolloer : MonoBehaviour
             _cursorNotAcceptable = false;
         }
     }
+    private void ErasedCandy()
+    {
+        //3つ以上そろっているキャンディのGameObjectを消します
+        //ボムが発動したときは再度探索しなおします
+        foreach (Transform Candy in _candys.transform)
+        {
+            int CandyPosX = Mathf.FloorToInt(Candy.position.x);
+            int CandyPosY = Mathf.FloorToInt(Candy.position.y);
+            if (_fieldConnectionSearch[CandyPosX, CandyPosY] == _noData)
+            {
+                Destroy(Candy.gameObject);
+                _fieldNormalCandySearch[CandyPosX, CandyPosY] = _noData;
+                UseBom(CandyPosX, CandyPosY);
+                CreateBoms(CandyPosX, CandyPosY);
+            }
+        }
+    }
     private IEnumerator CandyFall(int X, int count)
     {
         int fallCount = 0;
@@ -331,6 +358,7 @@ public class GameContolloer : MonoBehaviour
         {
             fallCount++;
             _reFallCandyCheck = true;
+            yield return null;
             for (int i = count + 1; i <= _fieldMaxY && _fieldNormalCandySearch[X, i] == _noData; i++)
             {
                 fallCount++;
@@ -340,7 +368,6 @@ public class GameContolloer : MonoBehaviour
             ///_fieldNormalCandySearch[X, count]に_fieldNormalCandySearch[X, count + fallCount]の
             ///GameObjectと配列の中身を移動させます。
             ///</summary>
-            yield return null;
             if (count + fallCount <= _fieldMaxY)
             {
                 GameObject dropCandy = GetFieldObject(X, count + fallCount);
@@ -348,6 +375,9 @@ public class GameContolloer : MonoBehaviour
                 {
                     _fieldNormalCandySearch[X, count] = _fieldNormalCandySearch[X, count + fallCount];
                     _fieldNormalCandySearch[X, count + fallCount] = _noData;
+
+                    _fieldTypeBoms[X, count] = _fieldTypeBoms[X, count + fallCount];
+                    _fieldTypeBoms[X, count + fallCount] = _noData;
                     dropCandy.transform.position = new Vector2(X, count);
                 }
             }
@@ -380,6 +410,7 @@ public class GameContolloer : MonoBehaviour
             newVerticalBom.transform.SetParent(_candys.transform, true);
             _fieldNormalCandySearch[X, Y] = _fieldVerticalBoms[X, Y];
             _fieldConnectionSearch[X, Y] = _fieldVerticalBoms[X, Y];
+            _fieldTypeBoms[X, Y] = _verticalBom;
             _fieldVerticalBoms[X, Y] = _noData;
         }
         if (_fieldHorizontalBoms[X, Y] != _noData)
@@ -389,16 +420,56 @@ public class GameContolloer : MonoBehaviour
             newHorizontalBom.transform.SetParent(_candys.transform, true);
             _fieldNormalCandySearch[X, Y] = _fieldHorizontalBoms[X, Y];
             _fieldConnectionSearch[X, Y] = _fieldHorizontalBoms[X, Y];
+            _fieldTypeBoms[X, Y] = _horizontalBom;
             _fieldHorizontalBoms[X, Y] = _noData;
         }
-
+    }
+    private void UseBom(int X, int Y)
+    {
+        //各ボムが消されたかどうかを「_fieldTypeBoms」配列により確認し種類を判別します
+        //縦のスプライトボムです。ボムの上下のキャンディを消します
+        if (_fieldTypeBoms[X, Y] == _verticalBom)
+        {
+           foreach (Transform candy in _candys.transform)
+            {
+                int candyPosX = Mathf.FloorToInt(candy.position.x);
+                int candyPosY = Mathf.FloorToInt(candy.position.y);
+                if (candy.transform.position.x == X &&
+                    candy.transform.position.y >= 0)
+                {                   
+                    Destroy(candy.gameObject);
+                    _fieldConnectionSearch[X, candyPosY] = _noData;
+                    _fieldNormalCandySearch[X, candyPosY] = _noData;
+                    _fieldTypeBoms[X, Y] = _noData;
+                    ErasedCandy();
+                }
+            }
+        }
+        //横のスプライトボムです。ボムの左右のキャンディを消します
+        if (_fieldTypeBoms[X, Y] == _horizontalBom)
+        {
+            foreach (Transform candy in _candys.transform)
+            {
+                int candyPosX = Mathf.FloorToInt(candy.position.x);
+                int candyPosY = Mathf.FloorToInt(candy.position.y);
+                if (candy.transform.position.x >= 0 &&
+                    candy.transform.position.y == Y)
+                {
+                    Destroy(candy.gameObject);
+                    _fieldConnectionSearch[candyPosX, Y] = _noData;
+                    _fieldNormalCandySearch[candyPosX, Y] = _noData;
+                    _fieldTypeBoms[X, Y] = _noData;
+                    ErasedCandy();
+                }
+            }
+        }
     }
     private GameObject GetFieldObject(int X, int Y)
     {
         //落下させるキャンディのGameObjectを取得
         foreach (Transform fieldCandy in _candys.transform)
         {
-            if(fieldCandy.transform.position.x == X &&
+            if (fieldCandy.transform.position.x == X &&
                fieldCandy.transform.position.y == Y)
             {
                 return fieldCandy.gameObject;
@@ -442,6 +513,7 @@ public class GameContolloer : MonoBehaviour
             //ボム生成のための配列の中身を全て「_noData」にします
             _fieldVerticalBoms[candyPosX, candyPosY] = _noData;
             _fieldHorizontalBoms[candyPosX, candyPosY] = _noData;
+            _fieldTypeBoms[candyPosX, candyPosY] = _noData;
         }
         //探索用の配列にコピーします
         _fieldConnectionSearch = (int[,])_fieldNormalCandySearch.Clone();
