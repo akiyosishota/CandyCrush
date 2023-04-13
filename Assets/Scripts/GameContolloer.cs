@@ -6,8 +6,20 @@ using System;
 
 public class GameContolloer : MonoBehaviour
  {
-    private int _verticalBom = 0;
-    private int _horizontalBom = 1;
+    private bool _wrappingBomExplosion = false;
+    private bool _colorBomCreateVerticalBom = false;
+    private bool _colorBomCreateHorizontalBom = false;
+
+    private int _checkUpCount = default;
+    private int _checkDownCount = default;
+    private int _checkLeftCount = default;
+    private int _checkRightCount = default;
+
+    //ボムの種類にを判別するための変数
+    private int _verticalBom = 1;
+    private int _horizontalBom = 2;
+    private int _wrappingBom = 3;
+    private int _colorBom = 4;
     //フィールドのキャンディを管理するための配列
     private int[,] _fieldNormalCandySearch = null;
     private int[,] _fieldConnectionSearch = null;
@@ -16,6 +28,7 @@ public class GameContolloer : MonoBehaviour
     //生成するボムの情報を管理する配列
     private int[,] _fieldVerticalBoms = null;
     private int[,] _fieldHorizontalBoms = null;
+    private int[,] _fieldWrappingBoms = null;
     //フィールドのサイズ
     private int _fieldMaxX = 4;
     private int _fieldMaxY = 4;
@@ -25,13 +38,14 @@ public class GameContolloer : MonoBehaviour
     private int _noData = 99;
     //落下処理をした後再度キャンディが消せるか確認するための変数
     private bool _reFallCandyCheck = false;
-
+    //キャンディの探索をしているとき移動できないよう制限するための変数
     private bool _cursorNotAcceptable = false;
     //役割の違うキャンディのPrefabを取得するためのGameObject型の配列
     private GameObject[] _normalCandys;
     private GameObject[] _horizontalBoms;
     private GameObject[] _verticalBoms;
-    private GameObject[] _surroundingsBoms;
+    private GameObject[] _wrappingBoms;
+    private GameObject[] _colorBoms;
 
     [SerializeField]  public  TextMeshProUGUI _text;
     //フィールドにあるキャンディの親オブジェクト
@@ -48,6 +62,7 @@ public class GameContolloer : MonoBehaviour
         _fieldNormalCandySearch = new int[_fieldMaxX + 1, _fieldMaxY + 1];
         _fieldVerticalBoms = new int[_fieldMaxX + 1, _fieldMaxY + 1];
         _fieldHorizontalBoms = new int[_fieldMaxX + 1, _fieldMaxY + 1];
+        _fieldWrappingBoms = new int[_fieldMaxX + 1, _fieldMaxY + 1];
         //フィールドにあるキャンディの親オブジェクトを取得
         _candys = GameObject.Find("CandyObjects");
         //クリックした時表示させるカーソルの親オブジェクトを取得
@@ -112,6 +127,25 @@ public class GameContolloer : MonoBehaviour
                     CursorNotDisplay();
                 }
             }
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            ///<summary>
+            ///配列の中身を出力するテスト
+            ///フィールドと同じ形で配列表示させるため、
+            ///Yの最大値からconsoleに出力
+            ///</summary>
+            print("Field------------------------------------------");
+            for (int y = _fieldMaxY; y >= 0; y--)
+            {
+                string outPutString = "";
+                for (int x = 0; x <= _fieldMaxX; x++)
+                {
+                    outPutString += _fieldTypeBoms[x, y];
+                }
+                print(outPutString);
+            }
+            print("Field------------------------------------------");
         }
         {
             string aaa = default;
@@ -244,67 +278,76 @@ public class GameContolloer : MonoBehaviour
         //クリックでのキャンディの移動ができないよう制限します
         _cursorNotAcceptable = true;
         //ボムが生成されない通常消し
-        int vanishCandy = 2;
-        //ボーダー柄ボムの生成個数
+        int normalErasedCandy = 2;
+        //ストライプボムの生成個数
         int stripeBom = 3;
-
+        //カラーボムの生成個数
+        int colorBom = 4;
         _reFallCandyCheck = false;
         for (int Y = 0; Y <= _fieldMaxY; Y++)
         {
             for (int X = 0; X <= _fieldMaxY; X++)
-            {
+            {               
                 ///<summary>
-                ///同色のキャンディが縦方向＆横方向に3つ以上並んでいると
-                ///消す対象として配列に格納
+                ///同色のキャンディが縦、横に繋がっている個数を調べます
+                ///4つ繋がっているときに縦、横に対応したスプライトボムを生成します
+                ///3つ以上つながっていると消す対象として配列の座標に「_noData」を格納します
+                ///消す対象として配列に格納します
                 ///</summary>
-                int verticalConnectionCandyCount = default;
                 int horizontalConnectionCandyCount = default;
+                int verticalConnectionCandyCount = default;
                 for (int i = X; i < _fieldMaxX && _fieldNormalCandySearch[i, Y] == _fieldNormalCandySearch[i + 1, Y]; i++)
                 {
-                    verticalConnectionCandyCount++;
+                    horizontalConnectionCandyCount++;
                 }
-                if (verticalConnectionCandyCount >= stripeBom)
+                if (horizontalConnectionCandyCount == colorBom)
                 {
-                    _fieldVerticalBoms[X + UnityEngine.Random.Range(0, verticalConnectionCandyCount), Y] = _fieldNormalCandySearch[X + verticalConnectionCandyCount, Y];
+                    _colorBomCreateHorizontalBom = true;
+                    ColorBomCreateCheck(X, Y, horizontalConnectionCandyCount);
                 }
-                if (verticalConnectionCandyCount >= vanishCandy)
+                if (horizontalConnectionCandyCount == stripeBom)
                 {
-                    for (int i = 0; i <= verticalConnectionCandyCount; i++)
+                    _fieldVerticalBoms[X + UnityEngine.Random.Range(0, horizontalConnectionCandyCount), Y] = _fieldNormalCandySearch[X + horizontalConnectionCandyCount, Y];
+                    for (int i = 0; i <= horizontalConnectionCandyCount; i++)
+                    {
+                        _fieldConnectionSearch[X + i, Y] = _noData;
+                    }
+                }
+                if (horizontalConnectionCandyCount == normalErasedCandy)
+                {
+                    for (int i = 0; i <= horizontalConnectionCandyCount; i++)
                     {
                         _fieldConnectionSearch[X + i, Y] = _noData;
                     }
                 }
                 for (int i = Y; i < _fieldMaxY && _fieldNormalCandySearch[X, i] == _fieldNormalCandySearch[X, i + 1]; i++)
                 {
-                    horizontalConnectionCandyCount++;
+                    verticalConnectionCandyCount++;
                 }
-                if (horizontalConnectionCandyCount >= stripeBom)
+                if (verticalConnectionCandyCount == colorBom)
                 {
-                    _fieldHorizontalBoms[X , Y + UnityEngine.Random.Range(0, horizontalConnectionCandyCount)] = _fieldNormalCandySearch[X , Y + horizontalConnectionCandyCount];
+                    _colorBomCreateVerticalBom = true;
+                    ColorBomCreateCheck(X, Y, verticalConnectionCandyCount);
                 }
-                if (horizontalConnectionCandyCount >= vanishCandy)
+                if (verticalConnectionCandyCount == stripeBom)
                 {
-                    for (int i = 0; i <= horizontalConnectionCandyCount; i++)
+                    _fieldHorizontalBoms[X , Y + UnityEngine.Random.Range(0, verticalConnectionCandyCount)] = _fieldNormalCandySearch[X , Y + verticalConnectionCandyCount];
+                    for (int i = 0; i <= verticalConnectionCandyCount; i++)
+                    {
+                        _fieldConnectionSearch[X, Y + i] = _noData;
+                    }
+                }
+                if (verticalConnectionCandyCount == normalErasedCandy)
+                {
+                    for (int i = 0; i <= verticalConnectionCandyCount; i++)
                     {
                         _fieldConnectionSearch[X, Y + i] = _noData;
                     }
                 }
             }
         }
+        BomCreatCheck();
         ErasedCandy();
-       ////3つ以上そろっているキャンディのGameObjectを消します
-       //foreach (Transform Candy in _candys.transform)
-       //{
-       //    int CandyPosX = Mathf.FloorToInt(Candy.position.x);
-       //    int CandyPosY = Mathf.FloorToInt(Candy.position.y);
-       //    if (_fieldConnectionSearch[CandyPosX, CandyPosY] == _noData)
-       //    {
-       //        Destroy(Candy.gameObject);
-       //        _fieldNormalCandySearch[CandyPosX, CandyPosY] = _noData;
-       //        UseBom(CandyPosX, CandyPosY);
-       //        CreateBoms(CandyPosX, CandyPosY);
-       //    }
-       //}
         for (int X = 0; X <= _fieldMaxX; X++)
         {
             ///<summary>
@@ -336,6 +379,10 @@ public class GameContolloer : MonoBehaviour
     }
     private void ErasedCandy()
     {
+        if (_wrappingBomExplosion)
+        {
+            _wrappingBomExplosion = false;
+        }
         //3つ以上そろっているキャンディのGameObjectを消します
         //ボムが発動したときは再度探索しなおします
         foreach (Transform Candy in _candys.transform)
@@ -344,10 +391,18 @@ public class GameContolloer : MonoBehaviour
             int CandyPosY = Mathf.FloorToInt(Candy.position.y);
             if (_fieldConnectionSearch[CandyPosX, CandyPosY] == _noData)
             {
-                Destroy(Candy.gameObject);
-                _fieldNormalCandySearch[CandyPosX, CandyPosY] = _noData;
-                UseBom(CandyPosX, CandyPosY);
-                CreateBoms(CandyPosX, CandyPosY);
+                if (_fieldNormalCandySearch[CandyPosX, CandyPosY] == _colorBom)
+                {
+                    Debug.Log("へいへい");
+                }
+                if (_fieldTypeBoms[CandyPosX, CandyPosY] != 5)
+                {
+                    Destroy(Candy.gameObject);
+                    UseBom(CandyPosX, CandyPosY);
+                    _fieldNormalCandySearch[CandyPosX, CandyPosY] = _noData;
+                    CreateBoms(CandyPosX, CandyPosY);
+                }
+
             }
         }
     }
@@ -396,6 +451,119 @@ public class GameContolloer : MonoBehaviour
             }
         }
     }
+    private void BomCreatCheck()
+    {
+        for (int j = 0; j <= _fieldMaxY; j++)
+        {
+            for (int i = 0; i <= _fieldMaxX; i++)
+            {
+                ArrayCheckUp(i, j);
+                ArrayCheckDown(i, j);
+                ArrayCheckLeft(i, j);
+                ArrayCheckRight(i, j);
+                if ((_checkUpCount == 2 || _checkDownCount == 2) &&
+                   (_checkLeftCount == 2 || _checkRightCount == 2))
+                {
+                    _fieldWrappingBoms[i, j] = _fieldNormalCandySearch[i, j];
+                }
+            }
+        }
+    }
+    private void ArrayCheckUp(int X, int Y)
+    {
+        _checkUpCount = 0;
+        if (Y < _fieldMaxY && _fieldNormalCandySearch[X, Y + 1] == _fieldNormalCandySearch[X, Y])
+        {
+            _checkUpCount++;
+            for (int i = Y + 1; i < _fieldMaxY && _fieldNormalCandySearch[X, i + 1] == _fieldNormalCandySearch[X, i]; i++)
+            {
+                _checkUpCount++;
+            }
+        }
+    }
+    private void ArrayCheckDown(int X, int Y)
+    {
+        _checkDownCount = 0;
+        if (Y > 0 && _fieldNormalCandySearch[X, Y - 1] == _fieldNormalCandySearch[X, Y])
+        {
+            _checkDownCount++;
+            for (int i = Y - 1; i > 0 && _fieldNormalCandySearch[X, i - 1] == _fieldNormalCandySearch[X, i]; i--)
+            {
+                _checkDownCount++;
+            }
+        }
+    }
+    private void ArrayCheckLeft(int X, int Y)
+    {
+        _checkLeftCount = 0;
+        if (X > 0 && _fieldNormalCandySearch[X - 1, Y] == _fieldNormalCandySearch[X, Y])
+        {
+            _checkLeftCount++;
+            for (int i = X - 1; i > 0 && _fieldNormalCandySearch[i - 1, Y] == _fieldNormalCandySearch[i , Y]; i--)
+            {
+                _checkLeftCount++;
+            }
+        }
+    }
+    private void ArrayCheckRight(int X, int Y)
+    {
+        _checkRightCount = 0;
+        if (X < _fieldMaxX && _fieldNormalCandySearch[X + 1, Y] == _fieldNormalCandySearch[X, Y])
+        {
+            _checkRightCount++;
+            for (int i = X + 1; i < _fieldMaxX && _fieldNormalCandySearch[i + 1, Y] == _fieldNormalCandySearch[i, Y]; i++)
+            {
+                _checkRightCount++;
+            }
+        }
+    }
+    private void ColorBomCreateCheck(int X, int Y, int count)
+    {
+        if (_colorBomCreateVerticalBom)
+        {
+            for (int i = 0; Y + i <= count; i++)
+            {
+                ArrayCheckUp(X, Y + i);
+                ArrayCheckDown(X, Y + i);
+                if (_checkUpCount == 2 && _checkDownCount == 2)
+                {
+                    _fieldConnectionSearch[X, Y + i] = _noData;
+                    _fieldTypeBoms[X, Y + i] = _colorBom;
+                }
+            }
+            for (int i = 0; Y + i <= count; i++)
+            {
+                if (_fieldTypeBoms[X, Y + i] == _noData)
+                {
+                    _fieldConnectionSearch[X, Y + i] = _noData;
+                    _fieldNormalCandySearch[X, Y + i] = _noData;
+                }
+            }
+            _colorBomCreateVerticalBom = false;
+        }
+        if (_colorBomCreateHorizontalBom)
+        {
+            for (int i = 0; X + i <= count; i++)
+            {
+                ArrayCheckLeft(X + i, Y);
+                ArrayCheckRight(X + i, Y);
+                if (_checkLeftCount == 2 && _checkRightCount == 2)
+                {
+                    _fieldConnectionSearch[X + i, Y] = _noData;
+                    _fieldTypeBoms[X + i, Y] = _colorBom;
+                }
+            }
+            for (int i = 0; X + i <= count; i++)
+            {
+                if (_fieldTypeBoms[X + i, Y] == _noData)
+                {
+                    _fieldConnectionSearch[X + i, Y] = _noData;
+                    _fieldNormalCandySearch[X + i, Y] = _noData;
+                }
+            }
+            _colorBomCreateHorizontalBom = false;
+        }
+    }
     private void CreateBoms(int X, int Y)
     {
         ///<summary>
@@ -423,6 +591,25 @@ public class GameContolloer : MonoBehaviour
             _fieldTypeBoms[X, Y] = _horizontalBom;
             _fieldHorizontalBoms[X, Y] = _noData;
         }
+        if (_fieldWrappingBoms[X, Y] != _noData)
+        {
+            GameObject newWrappingBom = Instantiate(_wrappingBoms[_fieldWrappingBoms[X, Y]]);
+            newWrappingBom.transform.position = new Vector2(X, Y);
+            newWrappingBom.transform.SetParent(_candys.transform, true);
+            _fieldNormalCandySearch[X, Y] = _fieldWrappingBoms[X, Y];
+            _fieldConnectionSearch[X, Y] = _fieldWrappingBoms[X, Y];
+            _fieldTypeBoms[X, Y] =_wrappingBom;
+            _fieldWrappingBoms[X, Y] = _noData;
+        }
+        if (_fieldTypeBoms[X, Y] == _colorBom)
+        {
+            GameObject newColorBom = Instantiate(_colorBoms[0]);
+            newColorBom.transform.position = new Vector2(X, Y);
+            newColorBom.transform.SetParent(_candys.transform, true);
+            _fieldNormalCandySearch[X, Y] = _colorBom;
+            _fieldConnectionSearch[X, Y] = _colorBom;
+            _fieldTypeBoms[X, Y] = _noData;
+        }
     }
     private void UseBom(int X, int Y)
     {
@@ -434,12 +621,12 @@ public class GameContolloer : MonoBehaviour
             {
                 int candyPosX = Mathf.FloorToInt(candy.position.x);
                 int candyPosY = Mathf.FloorToInt(candy.position.y);
-                if (candy.transform.position.x == X &&
-                    candy.transform.position.y >= 0)
+                if (candyPosX == X &&
+                    candyPosY >= 0)
                 {                   
                     Destroy(candy.gameObject);
-                    _fieldConnectionSearch[X, candyPosY] = _noData;
-                    _fieldNormalCandySearch[X, candyPosY] = _noData;
+                    _fieldConnectionSearch[candyPosX, candyPosY] = _noData;
+                    _fieldNormalCandySearch[candyPosX, candyPosY] = _noData;
                     _fieldTypeBoms[X, Y] = _noData;
                     ErasedCandy();
                 }
@@ -452,16 +639,56 @@ public class GameContolloer : MonoBehaviour
             {
                 int candyPosX = Mathf.FloorToInt(candy.position.x);
                 int candyPosY = Mathf.FloorToInt(candy.position.y);
-                if (candy.transform.position.x >= 0 &&
-                    candy.transform.position.y == Y)
+                if (candyPosX >= 0 &&
+                    candyPosY == Y)
                 {
                     Destroy(candy.gameObject);
-                    _fieldConnectionSearch[candyPosX, Y] = _noData;
-                    _fieldNormalCandySearch[candyPosX, Y] = _noData;
+                    _fieldConnectionSearch[candyPosX, candyPosY] = _noData;
+                    _fieldNormalCandySearch[candyPosX, candyPosY] = _noData;
                     _fieldTypeBoms[X, Y] = _noData;
                     ErasedCandy();
                 }
             }
+        }
+        //ラッピングボムです。自身を中心に周囲9マスを消します
+        if (_fieldTypeBoms[X, Y] == _wrappingBom)
+        {
+            int wrappingBomExplosionColor = _fieldNormalCandySearch[X, Y];
+            foreach (Transform candy in _candys.transform)
+            {
+                int candyPosX = Mathf.FloorToInt(candy.position.x);
+                int candyPosY = Mathf.FloorToInt(candy.position.y);
+                if ((candyPosX >= X - 1 && candyPosX <= X + 1) &&
+                    candyPosY >= Y - 1 && candyPosY <= Y + 1)
+                {
+                    Destroy(candy.gameObject);
+                    _fieldConnectionSearch[candyPosX, candyPosY] = _noData;
+                    _fieldNormalCandySearch[candyPosX, candyPosY] = _noData;
+                    _fieldTypeBoms[X, Y] = _noData;                  
+                }
+            }
+            //GameObject wrappingBomExplosion = Instantiate(_wrappingBoms[wrappingBomExplosionColor]);
+            //wrappingBomExplosion.transform.position = new Vector2(X, Y);
+            //wrappingBomExplosion.transform.SetParent(_candys.transform, true);
+            //Material explosionMaterial = new Material(_wrappingBoms[wrappingBomExplosionColor].GetComponent<Renderer>().sharedMaterial);
+            //explosionMaterial.color = new Color(1f, 1f, 1f, 2f);
+            //wrappingBomExplosion.GetComponent<Renderer>().material = explosionMaterial;
+            //_fieldNormalCandySearch[X, Y] = wrappingBomExplosionColor;
+            //_fieldConnectionSearch[X, Y] = wrappingBomExplosionColor;
+            //_wrappingBomExplosion = true;
+            //print("Field------------------------------------------");
+            //for (int y = _fieldMaxY; y >= 0; y--)
+            //{
+            //    string outPutString = "";
+            //    for (int x = 0; x <= _fieldMaxX; x++)
+            //    {
+            //        outPutString += _fieldConnectionSearch[x, y];
+            //    }
+            //    print(outPutString);
+            //}
+            //print("Field------------------------------------------");
+            //_fieldTypeBoms[X, Y] = 5;
+            ErasedCandy();
         }
     }
     private GameObject GetFieldObject(int X, int Y)
@@ -486,7 +713,8 @@ public class GameContolloer : MonoBehaviour
         _normalCandys = Resources.LoadAll<GameObject>("NormalCandys");
         _horizontalBoms = Resources.LoadAll<GameObject>("HorizontalBoms");
         _verticalBoms = Resources.LoadAll<GameObject>("VerticalBoms");
-        _surroundingsBoms = Resources.LoadAll<GameObject>("SurroundingsBoms");
+        _wrappingBoms = Resources.LoadAll<GameObject>("WrappingBoms");
+        _colorBoms = Resources.LoadAll<GameObject>("ColorBom");
     }
     private void ArrySet()
     {
@@ -511,9 +739,10 @@ public class GameContolloer : MonoBehaviour
                 count++;
             }
             //ボム生成のための配列の中身を全て「_noData」にします
+            _fieldTypeBoms[candyPosX, candyPosY] = _noData;
             _fieldVerticalBoms[candyPosX, candyPosY] = _noData;
             _fieldHorizontalBoms[candyPosX, candyPosY] = _noData;
-            _fieldTypeBoms[candyPosX, candyPosY] = _noData;
+            _fieldWrappingBoms[candyPosX, candyPosY] = _noData;           
         }
         //探索用の配列にコピーします
         _fieldConnectionSearch = (int[,])_fieldNormalCandySearch.Clone();
